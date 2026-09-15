@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>mObywatel - Generator Kluczy Dostępowych</title>
+    <title>mObywatel - Generator Kluczy i Danych</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,219 +14,444 @@
         }
 
         body {
-            background-color: #0A0B0E;
+            background: radial-gradient(circle at 50% 20%, #172033 0%, #080A0E 100%);
             color: #FFFFFF;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 16px;
+            padding: 20px 16px;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(56, 155, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 440px;
-            background-color: #12141A;
-            border: 1.5px solid #242832;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+            max-width: 480px;
+            background: rgba(18, 20, 26, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7), 0 0 24px rgba(56, 155, 255, 0.08);
         }
 
-        .header {
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-left {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #242832;
+        }
+
+        .eagle-badge {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #DC2626, #991B1B);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
         }
 
         .header-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 900;
             color: #FFFFFF;
+            letter-spacing: -0.3px;
         }
 
         .header-sub {
-            font-size: 13px;
+            font-size: 12.5px;
             color: #8A92A2;
-            margin-top: 2px;
+            margin-top: 1px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            color: #4ADE80;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #4ADE80;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #4ADE80;
         }
 
         .section-label {
-            font-size: 13.5px;
-            font-weight: 700;
-            color: #C5CBD3;
-            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #A0AAB8;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
         }
 
         .platform-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         .platform-btn {
-            padding: 14px 8px;
-            background-color: #181A20;
-            border: 2px solid #242832;
-            border-radius: 14px;
+            padding: 14px 10px;
+            background-color: rgba(24, 26, 32, 0.8);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
             color: #8A92A2;
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .platform-btn:hover {
+            border-color: rgba(56, 155, 255, 0.4);
+            color: #FFFFFF;
         }
 
         .platform-btn.active {
-            background-color: #1E2330;
+            background: linear-gradient(145deg, rgba(36, 40, 52, 0.9), rgba(24, 28, 38, 0.9));
             border-color: #389BFF;
             color: #FFFFFF;
-            box-shadow: 0 4px 14px rgba(56, 155, 255, 0.2);
+            box-shadow: 0 6px 20px rgba(56, 155, 255, 0.25);
+        }
+
+        .profile-card {
+            background: rgba(24, 26, 32, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 22px;
+        }
+
+        .profile-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #8A92A2;
+            margin-bottom: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #0D0F14;
+            border: 1.5px solid #242832;
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: #FFFFFF;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: #389BFF;
+        }
+
+        .photo-preview-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .photo-preview {
+            width: 54px;
+            height: 66px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #181A20;
+            border: 1px solid #389BFF;
+        }
+
+        .file-upload-btn {
+            padding: 8px 14px;
+            background: #242832;
+            border: 1px solid #389BFF;
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
         .btn-generate {
             width: 100%;
-            padding: 15px 0;
-            background: linear-gradient(135deg, #389BFF, #1E70E2);
+            padding: 16px 0;
+            background: linear-gradient(135deg, #389BFF 0%, #1D4ED8 100%);
             border: none;
-            border-radius: 14px;
+            border-radius: 16px;
             color: #FFFFFF;
-            font-size: 15.5px;
+            font-size: 16px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 6px 18px rgba(56, 155, 255, 0.35);
-            transition: transform 0.1s ease;
+            box-shadow: 0 8px 24px rgba(56, 155, 255, 0.4);
+            transition: all 0.2s ease;
         }
 
-        .btn-generate:active {
-            transform: scale(0.98);
+        .btn-generate:hover {
+            opacity: 0.95;
         }
 
         .result-box {
             display: none;
-            margin-top: 22px;
-            padding-top: 18px;
-            border-top: 1px solid #242832;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .badge-perm {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background-color: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #22C55E;
-            font-size: 12.5px;
+            background: rgba(34, 197, 94, 0.14);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            color: #4ADE80;
+            font-size: 12px;
             font-weight: 800;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .key-display {
-            background-color: #0A0B0E;
-            border: 1.5px dashed #389BFF;
-            border-radius: 12px;
+            background-color: #080A0D;
+            border: 1.5px dashed rgba(56, 155, 255, 0.6);
+            border-radius: 14px;
             padding: 14px;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             font-size: 12.5px;
             color: #389BFF;
             word-break: break-all;
             text-align: center;
-            font-weight: bold;
-            letter-spacing: 0.5px;
+            font-weight: 800;
             user-select: all;
+            margin-bottom: 10px;
         }
 
         .btn-copy {
             width: 100%;
-            margin-top: 12px;
             padding: 12px 0;
-            background-color: #1E2330;
+            background: rgba(36, 40, 52, 0.8);
             border: 1.5px solid #389BFF;
             border-radius: 12px;
             color: #FFFFFF;
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 13.5px;
+            font-weight: 800;
             cursor: pointer;
+            margin-bottom: 8px;
         }
 
         .instructions {
             margin-top: 24px;
-            background-color: #181A20;
-            border-radius: 14px;
-            padding: 14px;
-            border: 1px solid #242832;
+            background: rgba(24, 26, 32, 0.6);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .instructions-title {
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 800;
             color: #FFFFFF;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .instructions-text {
             font-size: 12.5px;
-            color: #8A92A2;
-            line-height: 1.45;
+            color: #94A3B8;
+            line-height: 1.55;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #22C55E;
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 24px rgba(34, 197, 94, 0.4);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
+    <div class="ambient-glow"></div>
+
     <div class="container">
-        <div class="header">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 2L15 8" stroke="#389BFF" stroke-width="2.2" stroke-linecap="round"/>
-                <path d="M16.5 6.5L18.5 8.5" stroke="#389BFF" stroke-width="2.2" stroke-linecap="round"/>
-                <circle cx="9" cy="15" r="6" stroke="#389BFF" stroke-width="2.2"/>
-                <circle cx="9" cy="15" r="2" fill="#389BFF"/>
-            </svg>
-            <div>
-                <div class="header-title">Generator Kluczy</div>
-                <div class="header-sub">Wybierz typ aplikacji (APK / PWA)</div>
+        <div class="brand-row">
+            <div class="brand-left">
+                <div class="eagle-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 5V11C4 16.55 7.4 21.74 12 23C16.6 21.74 20 16.55 20 11V5L12 2Z" fill="#FFFFFF"/>
+                        <path d="M12 6L14.5 11H9.5L12 6Z" fill="#DC2626"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="header-title">Generator Kluczy</div>
+                    <div class="header-sub">Wersja APK / PWA z danymi</div>
+                </div>
+            </div>
+
+            <div class="status-pill">
+                <div class="status-dot"></div>
+                <span>AKTYWNY</span>
             </div>
         </div>
 
-        <div class="section-label">1. Wybierz wersję aplikacji:</div>
+        <div class="section-label">1. Wersja aplikacji:</div>
         <div class="platform-grid">
-            <button type="button" id="btn-apk" class="platform-btn active" onclick="setTarget('APK')">📱 Android APK</button>
-            <button type="button" id="btn-pwa" class="platform-btn" onclick="setTarget('PWA')">🌐 PWA (Strona / iOS)</button>
+            <button type="button" id="btn-apk" class="platform-btn active" onclick="setTarget('APK')">
+                <span style="font-size: 20px;">📱</span>
+                <span>Android APK</span>
+            </button>
+            <button type="button" id="btn-pwa" class="platform-btn" onclick="setTarget('PWA')">
+                <span style="font-size: 20px;">🌐</span>
+                <span>PWA (Strona / iOS)</span>
+            </button>
         </div>
 
-        <button type="button" class="btn-generate" onclick="generateKey()">⚡ Generuj dedykowany klucz</button>
+        <div class="profile-card">
+            <div class="profile-title">
+                <span>👤 Personalizacja Danych mDowodu:</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="input-group">
+                    <div class="input-label">Imię</div>
+                    <input type="text" id="inp-firstname" class="form-input" value="MARTA">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Nazwisko</div>
+                    <input type="text" id="inp-lastname" class="form-input" value="KOWALSKA">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="input-group">
+                    <div class="input-label">PESEL</div>
+                    <input type="text" id="inp-pesel" class="form-input" value="91071427765">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Seria i numer dowodu</div>
+                    <input type="text" id="inp-doc" class="form-input" value="MWYC 24561">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-label">Zdjęcie profilowe (Opcjonalnie):</div>
+                <div class="photo-preview-container">
+                    <img id="img-preview" class="photo-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='54' height='66' viewBox='0 0 54 66'><rect width='54' height='66' fill='%23181A20'/><circle cx='27' cy='26' r='12' fill='%23389BFF'/><path d='M11 58C11 46 18 42 27 42C36 42 43 46 43 58Z' fill='%23389BFF'/></svg>">
+                    <label class="file-upload-btn">
+                        📷 Wybierz zdjęcie...
+                        <input type="file" id="inp-photo" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn-generate" onclick="generateKeyAndData()">
+            <span>⚡ Generuj Klucz oraz Token Danych</span>
+        </button>
 
         <div id="result-box" class="result-box">
             <div class="badge-perm">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span id="badge-text">KLUCZ WAŻNY BEZTERMINOWO DLA APK</span>
+                <span id="badge-text">DEDYKOWANY KLUCZ I TOKEN DANYCH GOTOWY</span>
             </div>
             
+            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-bottom: 4px;">1. Klucz Dostępu:</div>
             <div id="key-output" class="key-display">MOB-APK-...</div>
-            <button type="button" id="btn-copy" class="btn-copy" onclick="copyKey()">📋 Kopiuj klucz do schowka</button>
+            <button type="button" class="btn-copy" onclick="copyText('key-output')">📋 Kopiuj Klucz Dostępu</button>
+
+            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-top: 14px; margin-bottom: 4px;">2. Token Danych Profilu (Zdjęcie, Imię, PESEL):</div>
+            <div id="data-output" class="key-display" style="color: #22C55E; border-color: #22C55E;">MOBDATA:...</div>
+            <button type="button" class="btn-copy" style="border-color: #22C55E;" onclick="copyText('data-output')">📋 Kopiuj Token Danych (Zmienia Zdjęcie i Dane)</button>
         </div>
 
         <div class="instructions">
-            <div class="instructions-title">💡 Jak użyć klucza?</div>
+            <div class="instructions-title">💡 Jak zalogować się z własnym zdjęciem i danymi?</div>
             <div id="instructions-target" class="instructions-text">
-                • Wybrany typ: <b>Android APK</b><br>
-                • Ten klucz zadziała <b>wyłącznie w aplikacji mObywatel.apk</b> na telefonie.
+                • Skopiuj <b>Token Danych Profilu</b> i wklej go w pole logowania aplikacji mObywatel.apk.<br>
+                • Aplikacja automatycznie załaduje wpisane wyżej Imię, Nazwisko, PESEL oraz Zdjęcie!
             </div>
         </div>
     </div>
 
+    <div id="toast" class="toast">✅ Skopiowano do schowka!</div>
+
     <script>
-        // Anti-Inspect / Anti-F12 Protection
         document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || 
@@ -238,16 +463,31 @@
         });
 
         let currentTarget = 'APK';
+        let uploadedPhotoBase64 = "";
 
         function setTarget(target) {
             currentTarget = target;
             document.getElementById('btn-apk').classList.toggle('active', target === 'APK');
             document.getElementById('btn-pwa').classList.toggle('active', target === 'PWA');
-            const instr = document.getElementById('instructions-target');
-            if (target === 'APK') {
-                instr.innerHTML = '• Wybrany typ: <b>Android APK</b><br>• Ten klucz zadziała <b>wyłącznie w aplikacji mObywatel.apk</b> na telefonie.';
-            } else {
-                instr.innerHTML = '• Wybrany typ: <b>PWA (Przeglądarka / iOS)</b><br>• Ten klucz zadziała <b>wyłącznie w przeglądarce pod adresem http://192.168.10.107:5000</b>.';
+        }
+
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 240;
+                        canvas.height = 300;
+                        ctx.drawImage(img, 0, 0, 240, 300);
+                        uploadedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                        document.getElementById('img-preview').src = uploadedPhotoBase64;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
@@ -331,7 +571,7 @@
             return result;
         }
 
-        function generateKey() {
+        function generateKeyAndData() {
             const chars = '0123456789ABCDEF';
             let randHex = '';
             for (let i = 0; i < 32; i++) {
@@ -340,18 +580,38 @@
             const raw = "mObywatel_Perm_Key_2026:" + currentTarget + ":" + randHex;
             const hash = sha256Sync(raw).toUpperCase().substring(0, 8);
             const key = `MOB-${currentTarget}-${randHex}-${hash}`;
-            
-            document.getElementById('badge-text').innerText = `KLUCZ WAŻNY BEZTERMINOWO DLA ${currentTarget}`;
+
+            // Build MOBDATA profile token
+            const fn = document.getElementById('inp-firstname').value.trim() || 'MARTA';
+            const ln = document.getElementById('inp-lastname').value.trim() || 'KOWALSKA';
+            const pesel = document.getElementById('inp-pesel').value.trim() || '91071427765';
+            const doc = document.getElementById('inp-doc').value.trim() || 'MWYC 24561';
+
+            const profileObj = {
+                first_name: fn,
+                last_name: ln,
+                pesel: pesel,
+                series_number: doc
+            };
+            if (uploadedPhotoBase64) {
+                profileObj.photo_base64 = uploadedPhotoBase64;
+            }
+
+            const jsonStr = JSON.stringify(profileObj);
+            const dataToken = "MOBDATA:" + btoa(unescape(encodeURIComponent(jsonStr)));
+
             document.getElementById('key-output').innerText = key;
+            document.getElementById('data-output').innerText = dataToken;
             document.getElementById('result-box').style.display = 'block';
         }
 
-        function copyKey() {
-            const key = document.getElementById('key-output').innerText;
-            navigator.clipboard.writeText(key);
-            const btn = document.getElementById('btn-copy');
-            btn.innerText = '✅ Skopiowano do schowka!';
-            setTimeout(() => { btn.innerText = '📋 Kopiuj klucz do schowka'; }, 2500);
+        function copyText(elementId) {
+            const txt = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(txt);
+            
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
         }
     </script>
 </body>
