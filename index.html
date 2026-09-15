@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>mObywatel - Generator Kluczy Dostępowych</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0A0B0E;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background-color: #12141A;
+            border: 1.5px solid #242832;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #242832;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #FFFFFF;
+        }
+
+        .header-sub {
+            font-size: 13px;
+            color: #8A92A2;
+            margin-top: 2px;
+        }
+
+        .section-label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #C5CBD3;
+            margin-bottom: 10px;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .platform-btn {
+            padding: 14px 8px;
+            background-color: #181A20;
+            border: 2px solid #242832;
+            border-radius: 14px;
+            color: #8A92A2;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .platform-btn.active {
+            background-color: #1E2330;
+            border-color: #389BFF;
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(56, 155, 255, 0.2);
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 15px 0;
+            background: linear-gradient(135deg, #389BFF, #1E70E2);
+            border: none;
+            border-radius: 14px;
+            color: #FFFFFF;
+            font-size: 15.5px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(56, 155, 255, 0.35);
+            transition: transform 0.1s ease;
+        }
+
+        .btn-generate:active {
+            transform: scale(0.98);
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #242832;
+        }
+
+        .badge-perm {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22C55E;
+            font-size: 12.5px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .key-display {
+            background-color: #0A0B0E;
+            border: 1.5px dashed #389BFF;
+            border-radius: 12px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12.5px;
+            color: #389BFF;
+            word-break: break-all;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            user-select: all;
+        }
+
+        .btn-copy {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px 0;
+            background-color: #1E2330;
+            border: 1.5px solid #389BFF;
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .instructions {
+            margin-top: 24px;
+            background-color: #181A20;
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid #242832;
+        }
+
+        .instructions-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+        }
+
+        .instructions-text {
+            font-size: 12.5px;
+            color: #8A92A2;
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 2L15 8" stroke="#389BFF" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M16.5 6.5L18.5 8.5" stroke="#389BFF" stroke-width="2.2" stroke-linecap="round"/>
+                <circle cx="9" cy="15" r="6" stroke="#389BFF" stroke-width="2.2"/>
+                <circle cx="9" cy="15" r="2" fill="#389BFF"/>
+            </svg>
+            <div>
+                <div class="header-title">Generator Kluczy</div>
+                <div class="header-sub">Wybierz typ aplikacji (APK / PWA)</div>
+            </div>
+        </div>
+
+        <div class="section-label">1. Wybierz wersję aplikacji:</div>
+        <div class="platform-grid">
+            <button type="button" id="btn-apk" class="platform-btn active" onclick="setTarget('APK')">📱 Android APK</button>
+            <button type="button" id="btn-pwa" class="platform-btn" onclick="setTarget('PWA')">🌐 PWA (Strona / iOS)</button>
+        </div>
+
+        <button type="button" class="btn-generate" onclick="generateKey()">⚡ Generuj dedykowany klucz</button>
+
+        <div id="result-box" class="result-box">
+            <div class="badge-perm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span id="badge-text">KLUCZ WAŻNY BEZTERMINOWO DLA APK</span>
+            </div>
+            
+            <div id="key-output" class="key-display">MOB-APK-...</div>
+            <button type="button" id="btn-copy" class="btn-copy" onclick="copyKey()">📋 Kopiuj klucz do schowka</button>
+        </div>
+
+        <div class="instructions">
+            <div class="instructions-title">💡 Jak użyć klucza?</div>
+            <div id="instructions-target" class="instructions-text">
+                • Wybrany typ: <b>Android APK</b><br>
+                • Ten klucz zadziała <b>wyłącznie w aplikacji mObywatel.apk</b> na telefonie.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Anti-Inspect / Anti-F12 Protection
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123 || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+                (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        let currentTarget = 'APK';
+
+        function setTarget(target) {
+            currentTarget = target;
+            document.getElementById('btn-apk').classList.toggle('active', target === 'APK');
+            document.getElementById('btn-pwa').classList.toggle('active', target === 'PWA');
+            const instr = document.getElementById('instructions-target');
+            if (target === 'APK') {
+                instr.innerHTML = '• Wybrany typ: <b>Android APK</b><br>• Ten klucz zadziała <b>wyłącznie w aplikacji mObywatel.apk</b> na telefonie.';
+            } else {
+                instr.innerHTML = '• Wybrany typ: <b>PWA (Przeglądarka / iOS)</b><br>• Ten klucz zadziała <b>wyłącznie w przeglądarce pod adresem http://192.168.10.107:5000</b>.';
+            }
+        }
+
+        function sha256Sync(ascii) {
+            function rightRotate(value, amount) {
+                return (value >>> amount) | (value << (32 - amount));
+            }
+            var mathPow = Math.pow;
+            var maxWord = mathPow(2, 32);
+            var result = '';
+            var words = [];
+            var asciiBitLength = ascii.length * 8;
+            var i, j;
+            var hash = sha256Sync.h = sha256Sync.h || [];
+            var k = sha256Sync.k = sha256Sync.k || [];
+            var primeCounter = k.length;
+
+            var isPrime = function(n) {
+                for (var factor = 2; factor * factor <= n; factor++) {
+                    if (n % factor === 0) return false;
+                }
+                return true;
+            };
+
+            if (!primeCounter) {
+                for (var n = 2; primeCounter < 64; n++) {
+                    if (isPrime(n)) {
+                        hash[primeCounter] = (mathPow(n, 1/2) * maxWord) | 0;
+                        k[primeCounter++] = (mathPow(n, 1/3) * maxWord) | 0;
+                    }
+                }
+            }
+
+            ascii += '\x80';
+            while (ascii.length % 64 - 56) ascii += '\x00';
+            for (i = 0; i < ascii.length; i++) {
+                j = ascii.charCodeAt(i);
+                if (j >> 8) return;
+                words[i >> 2] |= j << ((3 - i % 4) * 8);
+            }
+            words[words.length] = ((asciiBitLength / maxWord) | 0);
+            words[words.length] = (asciiBitLength);
+
+            for (j = 0; j < words.length;) {
+                var w = words.slice(j, j += 16);
+                var oldHash = hash;
+                hash = hash.slice(0, 8);
+
+                for (i = 0; i < 64; i++) {
+                    var w15 = w[i - 15], w2 = w[i - 2];
+                    var a = hash[0], e = hash[4];
+                    var temp1 = hash[7]
+                        + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+                        + ((e & hash[5]) ^ ((~e) & hash[6]))
+                        + k[i]
+                        + (w[i] = (i < 16) ? w[i] : (
+                                w[i - 16]
+                                + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+                                + w[i - 7]
+                                + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+                            ) | 0
+                        );
+                    var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+                        + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+
+                    hash = [(temp1 + temp2) | 0].concat(hash);
+                    hash[4] = (hash[4] + temp1) | 0;
+                }
+
+                for (i = 0; i < 8; i++) {
+                    hash[i] = (hash[i] + oldHash[i]) | 0;
+                }
+            }
+
+            for (i = 0; i < 8; i++) {
+                for (j = 3; j >= 0; j--) {
+                    var b = (hash[i] >> (j * 8)) & 255;
+                    result += (b < 16 ? '0' : '') + b.toString(16);
+                }
+            }
+            return result;
+        }
+
+        function generateKey() {
+            const chars = '0123456789ABCDEF';
+            let randHex = '';
+            for (let i = 0; i < 32; i++) {
+                randHex += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const raw = "mObywatel_Perm_Key_2026:" + currentTarget + ":" + randHex;
+            const hash = sha256Sync(raw).toUpperCase().substring(0, 8);
+            const key = `MOB-${currentTarget}-${randHex}-${hash}`;
+            
+            document.getElementById('badge-text').innerText = `KLUCZ WAŻNY BEZTERMINOWO DLA ${currentTarget}`;
+            document.getElementById('key-output').innerText = key;
+            document.getElementById('result-box').style.display = 'block';
+        }
+
+        function copyKey() {
+            const key = document.getElementById('key-output').innerText;
+            navigator.clipboard.writeText(key);
+            const btn = document.getElementById('btn-copy');
+            btn.innerText = '✅ Skopiowano do schowka!';
+            setTimeout(() => { btn.innerText = '📋 Kopiuj klucz do schowka'; }, 2500);
+        }
+    </script>
+</body>
+</html>
