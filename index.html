@@ -428,19 +428,19 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span id="badge-text">DEDYKOWANY KLUCZ Z DANYMI GOTOWY</span>
+                <span id="badge-text">KLUCZ DOSTĘPU GOTOWY</span>
             </div>
             
-            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-bottom: 4px;">1. Twój Klucz Dostępu (Zmienia Zdjęcie i Dane w APK):</div>
-            <div id="key-output" class="key-display" style="color: #22C55E; border-color: #22C55E;">MOBDATA:...</div>
-            <button type="button" class="btn-copy" style="border-color: #22C55E;" onclick="copyText('key-output')">📋 Kopiuj Klucz Dostępu (Wklej w aplikacji APK)</button>
+            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-bottom: 4px;">Wygenerowany Klucz Dostępu:</div>
+            <div id="key-output" class="key-display">MOB-APK-...</div>
+            <button type="button" class="btn-copy" onclick="copyText('key-output')">📋 Kopiuj Klucz Dostępu</button>
         </div>
 
         <div class="instructions">
-            <div class="instructions-title">💡 Jak zalogować się z własnym zdjęciem i danymi?</div>
+            <div class="instructions-title">💡 Jak edytować zdjęcie i dane w aplikacji?</div>
             <div id="instructions-target" class="instructions-text">
-                • Skopiuj <b>Wygenerowany Klucz Dostępu</b> powyżej i wklej go w pole logowania aplikacji mObywatel.apk.<br>
-                • Aplikacja automatycznie zaloguje Cię i załaduje wpisane wyżej Imię, Nazwisko, PESEL oraz Zdjęcie!
+                • Zaloguj się dowolnym wygenerowanym kluczem.<br>
+                • Aby zmienić swoje Imię, Nazwisko, PESEL lub Zdjęcie profilowe, przejdź do zakładki <b>Więcej</b> (na samym dole) w aplikacji mObywatel.apk i kliknij <b>"Edycja danych i zdjęcia"</b>!
             </div>
         </div>
     </div>
@@ -568,30 +568,16 @@
         }
 
         function generateKeyAndData() {
-            // Build MOBDATA profile token containing photo & details
-            const fn = document.getElementById('inp-firstname').value.trim() || 'MARTA';
-            const ln = document.getElementById('inp-lastname').value.trim() || 'KOWALSKA';
-            const pesel = document.getElementById('inp-pesel').value.trim() || '91071427765';
-            const doc = document.getElementById('inp-doc').value.trim() || 'MWYC 24561';
-
-            const profileObj = {
-                first_name: fn,
-                last_name: ln,
-                pesel: pesel,
-                series_number: doc
-            };
-            if (uploadedPhotoBase64) {
-                let cleanImg = uploadedPhotoBase64;
-                if (cleanImg.indexOf(',') !== -1) {
-                    cleanImg = cleanImg.split(',')[1];
-                }
-                profileObj.photo_base64 = cleanImg;
+            const chars = '0123456789ABCDEF';
+            let randHex = '';
+            for (let i = 0; i < 32; i++) {
+                randHex += chars.charAt(Math.floor(Math.random() * chars.length));
             }
+            const raw = "mObywatel_Perm_Key_2026:" + currentTarget + ":" + randHex;
+            const hash = sha256Sync(raw).toUpperCase().substring(0, 8);
+            const key = `MOB-${currentTarget}-${randHex}-${hash}`;
 
-            const jsonStr = JSON.stringify(profileObj);
-            const dataToken = "MOBDATA:" + btoa(unescape(encodeURIComponent(jsonStr)));
-
-            document.getElementById('key-output').innerText = dataToken;
+            document.getElementById('key-output').innerText = key;
             document.getElementById('result-box').style.display = 'block';
         }
 
