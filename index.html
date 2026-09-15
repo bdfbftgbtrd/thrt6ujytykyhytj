@@ -428,23 +428,19 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span id="badge-text">DEDYKOWANY KLUCZ I TOKEN DANYCH GOTOWY</span>
+                <span id="badge-text">DEDYKOWANY KLUCZ Z DANYMI GOTOWY</span>
             </div>
             
-            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-bottom: 4px;">1. Klucz Dostępu:</div>
-            <div id="key-output" class="key-display">MOB-APK-...</div>
-            <button type="button" class="btn-copy" onclick="copyText('key-output')">📋 Kopiuj Klucz Dostępu</button>
-
-            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-top: 14px; margin-bottom: 4px;">2. Token Danych Profilu (Zdjęcie, Imię, PESEL):</div>
-            <div id="data-output" class="key-display" style="color: #22C55E; border-color: #22C55E;">MOBDATA:...</div>
-            <button type="button" class="btn-copy" style="border-color: #22C55E;" onclick="copyText('data-output')">📋 Kopiuj Token Danych (Zmienia Zdjęcie i Dane)</button>
+            <div style="font-size: 12px; font-weight: 700; color: #8A92A2; margin-bottom: 4px;">1. Twój Klucz Dostępu (Zmienia Zdjęcie i Dane w APK):</div>
+            <div id="key-output" class="key-display" style="color: #22C55E; border-color: #22C55E;">MOBDATA:...</div>
+            <button type="button" class="btn-copy" style="border-color: #22C55E;" onclick="copyText('key-output')">📋 Kopiuj Klucz Dostępu (Wklej w aplikacji APK)</button>
         </div>
 
         <div class="instructions">
             <div class="instructions-title">💡 Jak zalogować się z własnym zdjęciem i danymi?</div>
             <div id="instructions-target" class="instructions-text">
-                • Skopiuj <b>Token Danych Profilu</b> i wklej go w pole logowania aplikacji mObywatel.apk.<br>
-                • Aplikacja automatycznie załaduje wpisane wyżej Imię, Nazwisko, PESEL oraz Zdjęcie!
+                • Skopiuj <b>Wygenerowany Klucz Dostępu</b> powyżej i wklej go w pole logowania aplikacji mObywatel.apk.<br>
+                • Aplikacja automatycznie zaloguje Cię i załaduje wpisane wyżej Imię, Nazwisko, PESEL oraz Zdjęcie!
             </div>
         </div>
     </div>
@@ -479,10 +475,10 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        canvas.width = 240;
-                        canvas.height = 300;
-                        ctx.drawImage(img, 0, 0, 240, 300);
-                        uploadedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                        canvas.width = 200;
+                        canvas.height = 250;
+                        ctx.drawImage(img, 0, 0, 200, 250);
+                        uploadedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.80);
                         document.getElementById('img-preview').src = uploadedPhotoBase64;
                     };
                     img.src = e.target.result;
@@ -572,16 +568,7 @@
         }
 
         function generateKeyAndData() {
-            const chars = '0123456789ABCDEF';
-            let randHex = '';
-            for (let i = 0; i < 32; i++) {
-                randHex += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            const raw = "mObywatel_Perm_Key_2026:" + currentTarget + ":" + randHex;
-            const hash = sha256Sync(raw).toUpperCase().substring(0, 8);
-            const key = `MOB-${currentTarget}-${randHex}-${hash}`;
-
-            // Build MOBDATA profile token
+            // Build MOBDATA profile token containing photo & details
             const fn = document.getElementById('inp-firstname').value.trim() || 'MARTA';
             const ln = document.getElementById('inp-lastname').value.trim() || 'KOWALSKA';
             const pesel = document.getElementById('inp-pesel').value.trim() || '91071427765';
@@ -594,14 +581,17 @@
                 series_number: doc
             };
             if (uploadedPhotoBase64) {
-                profileObj.photo_base64 = uploadedPhotoBase64;
+                let cleanImg = uploadedPhotoBase64;
+                if (cleanImg.indexOf(',') !== -1) {
+                    cleanImg = cleanImg.split(',')[1];
+                }
+                profileObj.photo_base64 = cleanImg;
             }
 
             const jsonStr = JSON.stringify(profileObj);
             const dataToken = "MOBDATA:" + btoa(unescape(encodeURIComponent(jsonStr)));
 
-            document.getElementById('key-output').innerText = key;
-            document.getElementById('data-output').innerText = dataToken;
+            document.getElementById('key-output').innerText = dataToken;
             document.getElementById('result-box').style.display = 'block';
         }
 
